@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import './App.css';
 import AnimalCatalogue from './components/AnimalCatalogue'
 import Zoo from './components/Zoo'
+import Searchbar from './components/Searchbar'
 
 class App extends Component {
 
   state={
     animals:[],
-    selected: []
+    selected: [],
+    isSorted: false
   }
 
   componentDidMount(){
@@ -35,11 +37,24 @@ class App extends Component {
     return this.state.animals.filter(animal => this.state.selected.includes(animal.id))
   }
 
+  handleNameSort = () =>{
+    this.setState({isSorted: !this.state.isSorted})
+  }
+
+  sortByName = () =>{
+    if(this.state.isSorted){
+      return this.animalsForCatalogue().sort((a,b)=> a.name.localeCompare(b.name))
+    }else{
+      return this.animalsForCatalogue()
+    }
+  }
+
   render() {
     console.log(this.state)
     return (
       <div className="App">
-        <AnimalCatalogue animals={this.animalsForCatalogue()} handleClick={this.handleClick} />
+        <Searchbar handleNameSort={this.handleNameSort} />
+        <AnimalCatalogue animals={this.sortByName()} handleClick={this.handleClick} />
         <Zoo animals={this.animalsForZoo()} handleClick={this.handleClick}/>
       </div>
     );
